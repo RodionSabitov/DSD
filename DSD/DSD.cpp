@@ -668,6 +668,66 @@ public:
 	node_color * getRoot() {
 		return root;
 	}
+	node_color * Tree_search(node_color * x, int key) {
+		if ((x == nullptr) || (x->data == key)) {
+			return root;
+		}
+		if (key < x->data) {
+			return Tree_search(x->left, key);
+		}
+		else {
+			return Tree_search(x->right, key);
+		}
+	}
+	node_color * min(node_color *x) {
+		while (x->left != nullptr) {
+			x = x->left;
+		}
+		return x;
+	}
+	node_color * Tree_succ(node_color * x) {
+		if (x->right != nullptr) {
+			return min(x->right);
+		}
+		node_color * y = x->prev;
+		while ((y != nullptr) || (x = y->right)) {
+			x = y;
+			y = y->prev;
+		}
+		return x;
+	}
+
+	void RBDelete(RBTree *T, int key) {
+		node_color * z = Tree_search(T->getRoot(), key);
+		if (z->count > 1) {
+			z->count--;
+			return;
+		}
+		else {
+			if ((z->left != nullptr) && (z->right != nullptr)) {
+				node_color * x = Tree_succ(z);
+				z->data = x->data;
+				z->count = x->count;
+				z = x;
+			}
+			//у z максимум один потомок
+			node_color *N = nullptr;
+			node_color *B = nullptr;
+			z->left != nullptr ? N = z->left : N = z->right;
+			z->prev->right != z ? B = z->prev->right : B = z->prev->left;
+			node_color *CL = B->left; node_color *CR = B->right;
+			node_color *F = z->prev;
+			if (z->color == 'r') {//ничего делать не нужно
+				z->prev->left == z ? z->prev->left = N : z->prev->right = N;
+				N->prev = z->prev;
+				delete z;
+			}
+			else if ((F->color == 'r') && (B->color == 'b') && (N->color == 'b') && (((CL != nullptr) && (CL->color == 'b')) || (CL == nullptr)) && (((CR != nullptr) && (CR->color == 'b')) || (CR == nullptr))){
+				F->color = 'b'; B->color = 'r';
+			}
+		}
+		
+	}
 };
 
 int main()
