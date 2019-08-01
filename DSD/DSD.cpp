@@ -531,7 +531,7 @@ public:
 			Inorder_tree_walk(x->right);
 		}
 	}
-	void LeftRotate(RBTree *T, node_color *x) {
+	void LeftRotate(RBTree *T, node_color *x) {//x - предок
 		if (x->right != nullptr) {
 			node_color *y = x->right;
 			//node_color *y = x->left;
@@ -553,9 +553,9 @@ public:
 			y->left = x;
 		}
 	}
-	void RightRotate(RBTree *T, node_color *y) {//у == 3
+	void RightRotate(RBTree *T, node_color *y) {//y - предок
 		if (y->left != nullptr) {
-			node_color *x = y->left;//х это 2
+			node_color *x = y->left;
 			if (y == root) {
 				root = x;
 			}
@@ -564,14 +564,14 @@ public:
 					y->prev->right = x;
 				}
 				else {
-					y->prev->left = x;//у 4 двойка левый потомок теперь
+					y->prev->left = x;
 				}
 			}
-			x->prev = y->prev;//предок 2 есть 4
-			y->left = x->right;//у 3 теперь левый потомок это нуллптр
-			if (x->right != nullptr) x->right->prev = y;//3, сюда не заходим
-			y->prev = x;//у тройки предок теперь двойка !
-			x->right = y;//двойка указывает на тройку
+			x->prev = y->prev;
+			y->left = x->right;
+			if (x->right != nullptr) x->right->prev = y;
+			y->prev = x;
+			x->right = y;
 		}
 	}
 	node_color * insert(RBTree *T, int key) {
@@ -716,14 +716,46 @@ public:
 			z->left != nullptr ? N = z->left : N = z->right;
 			z->prev->right != z ? B = z->prev->right : B = z->prev->left;
 			node_color *CL = B->left; node_color *CR = B->right;
-			node_color *F = z->prev;
+			node_color *F = z->prev;//?? не обрабатывается случай, когда B == nullptr
 			if (z->color == 'r') {//ничего делать не нужно
-				z->prev->left == z ? z->prev->left = N : z->prev->right = N;
+				z->prev->left == z ? z->prev->left = N : z->prev->right = N;//? надо определиться, куда и как вставлять этот код в другие ветви else if 
 				N->prev = z->prev;
 				delete z;
-			}
-			else if ((F->color == 'r') && (B->color == 'b') && (N->color == 'b') && (((CL != nullptr) && (CL->color == 'b')) || (CL == nullptr)) && (((CR != nullptr) && (CR->color == 'b')) || (CR == nullptr))){
-				F->color = 'b'; B->color = 'r';
+			}//далее предполагается, что цвет удалённого узла чёрный
+			else {
+				while ((N != root) && (N->color == 'r')) {
+					if (B->color == 'r') {//4 случай
+						B->color = F->color;
+						F->color = 'r';
+						LeftRotate(this, F);
+						B = CL;//выставление переменных для случаев 1-3 и 5
+						if (B != nullptr) {
+							CL = B->left; CR = B->right;
+						}
+					}
+					//1 случай
+					if ((B->color == 'b') && (F->color == 'r') && (N->color == 'b') && (((CL != nullptr) && (CL->color == 'b')) || (CL == nullptr)) && (((CR != nullptr) && (CR->color == 'b')) || (CR == nullptr))) {
+						F->color = 'b'; B->color = 'r';//? delete z
+					}
+					//2 случай
+					else if ((B->color == 'b') && (CR->color == 'r')) {
+						B->color = F->color;
+						F->color = 'b';
+						if (CR != nullptr) CR->color = 'b';
+						LeftRotate(this, F);
+					}
+					//3 случай
+					else if ((B->color == 'b') && ((CL != nullptr) && (CL->color == 'r')) && ((CR == nullptr) || (CR->color == 'b'))) {
+						RightRotate(this, B);
+						if (CL != nullptr) CL->color = 'b';
+						B->color = 'r';
+					}
+					//5 случай
+					else if ((B->color == 'b') && (F->color == 'b') && (N->color == 'b') && (((CL != nullptr) && (CL->color == 'b')) || (CL == nullptr)) && (((CR != nullptr) && (CR->color == 'b')) || (CR == nullptr))) {
+						B->color = 'r';
+						N = F;
+					}
+				}
 			}
 		}
 		
