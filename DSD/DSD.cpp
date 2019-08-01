@@ -1,4 +1,4 @@
-// DSD.cpp: определяет точку входа для консольного приложения.
+п»ї// DSD.cpp: РѕРїСЂРµРґРµР»СЏРµС‚ С‚РѕС‡РєСѓ РІС…РѕРґР° РґР»СЏ РєРѕРЅСЃРѕР»СЊРЅРѕРіРѕ РїСЂРёР»РѕР¶РµРЅРёСЏ.
 //
 
 #include "stdafx.h"
@@ -11,16 +11,16 @@ class sl_list {
 private: 
 	int data;
 	sl_list * next;
-	bool first;//флаг того, есть хотя бы один элемент в списке или нет
+	bool first;//С„Р»Р°Рі С‚РѕРіРѕ, РµСЃС‚СЊ С…РѕС‚СЏ Р±С‹ РѕРґРёРЅ СЌР»РµРјРµРЅС‚ РІ СЃРїРёСЃРєРµ РёР»Рё РЅРµС‚
 public:
 	sl_list();
 	sl_list(int);
 	void show();
 	sl_list * search(int key);
-	sl_list * insert(int key);//в начало
+	sl_list * insert(int key);//РІ РЅР°С‡Р°Р»Рѕ
 	bool del(sl_list * d);
 	bool del(int x);
-	void add(int x);//в конец
+	void add(int x);//РІ РєРѕРЅРµС†
 };
 
 sl_list::sl_list() {
@@ -68,7 +68,7 @@ sl_list * sl_list::search(int key) {
 	}
 }
 
-sl_list * sl_list::insert(int key) {//в начало (перед элементом, из которого вызывается эта функция) 
+sl_list * sl_list::insert(int key) {//РІ РЅР°С‡Р°Р»Рѕ (РїРµСЂРµРґ СЌР»РµРјРµРЅС‚РѕРј, РёР· РєРѕС‚РѕСЂРѕРіРѕ РІС‹Р·С‹РІР°РµС‚СЃСЏ СЌС‚Р° С„СѓРЅРєС†РёСЏ) 
 	sl_list * temp = new sl_list;
 	temp->data = key;
 	if (this == nullptr) {
@@ -78,30 +78,30 @@ sl_list * sl_list::insert(int key) {//в начало (перед элементом, из которого выз
 		if (first == true) {
 			temp->next = this;
 		}
-		else {//в this еще не записывали элемент
-			delete temp;//костыль
+		else {//РІ this РµС‰Рµ РЅРµ Р·Р°РїРёСЃС‹РІР°Р»Рё СЌР»РµРјРµРЅС‚
+			delete temp;//РєРѕСЃС‚С‹Р»СЊ
 			this->data = key;
 			first = true;
-			return this;//в него вставили, его и возвращаем
+			return this;//РІ РЅРµРіРѕ РІСЃС‚Р°РІРёР»Рё, РµРіРѕ Рё РІРѕР·РІСЂР°С‰Р°РµРј
 		}
 	}
 	return temp;
 }
 
-bool sl_list::del(sl_list * d) {//поиск элемента и удаление его из списка
+bool sl_list::del(sl_list * d) {//РїРѕРёСЃРє СЌР»РµРјРµРЅС‚Р° Рё СѓРґР°Р»РµРЅРёРµ РµРіРѕ РёР· СЃРїРёСЃРєР°
 	sl_list * temp = this;
 	sl_list * temp2 = this;
 	while ((temp != d) && (temp != nullptr)) {
 		temp2 = temp;
 		temp = temp->next;
 	}
-	if (temp == nullptr) {//элемент не найден
+	if (temp == nullptr) {//СЌР»РµРјРµРЅС‚ РЅРµ РЅР°Р№РґРµРЅ
 		return false;
 	}
-	else {//надо удалить этот элемент, а ссылку предыдущего направить на его следующий элемент
-		//для двух элементов и найденном во втором нормально работает
-		if (temp == temp2) {//удаляемый элемент первый, придётся сдвинуть весь список к голове
-			//? проверить это на практике
+	else {//РЅР°РґРѕ СѓРґР°Р»РёС‚СЊ СЌС‚РѕС‚ СЌР»РµРјРµРЅС‚, Р° СЃСЃС‹Р»РєСѓ РїСЂРµРґС‹РґСѓС‰РµРіРѕ РЅР°РїСЂР°РІРёС‚СЊ РЅР° РµРіРѕ СЃР»РµРґСѓСЋС‰РёР№ СЌР»РµРјРµРЅС‚
+		//РґР»СЏ РґРІСѓС… СЌР»РµРјРµРЅС‚РѕРІ Рё РЅР°Р№РґРµРЅРЅРѕРј РІРѕ РІС‚РѕСЂРѕРј РЅРѕСЂРјР°Р»СЊРЅРѕ СЂР°Р±РѕС‚Р°РµС‚
+		if (temp == temp2) {//СѓРґР°Р»СЏРµРјС‹Р№ СЌР»РµРјРµРЅС‚ РїРµСЂРІС‹Р№, РїСЂРёРґС‘С‚СЃСЏ СЃРґРІРёРЅСѓС‚СЊ РІРµСЃСЊ СЃРїРёСЃРѕРє Рє РіРѕР»РѕРІРµ
+			//? РїСЂРѕРІРµСЂРёС‚СЊ СЌС‚Рѕ РЅР° РїСЂР°РєС‚РёРєРµ
 			temp2 = temp2->next;
 			delete temp;
 
@@ -109,7 +109,7 @@ bool sl_list::del(sl_list * d) {//поиск элемента и удаление его из списка
 
 			}*/
 		}
-		//? добавить разбор ситуации, когда один элемент в списке только
+		//? РґРѕР±Р°РІРёС‚СЊ СЂР°Р·Р±РѕСЂ СЃРёС‚СѓР°С†РёРё, РєРѕРіРґР° РѕРґРёРЅ СЌР»РµРјРµРЅС‚ РІ СЃРїРёСЃРєРµ С‚РѕР»СЊРєРѕ
 		temp2->next = temp->next;
 		delete temp;
 	}
@@ -122,7 +122,7 @@ bool sl_list::del(int x) {
 		temp2 = temp;
 		temp = temp->next;
 	}
-	if (temp == nullptr) {//элемент не найден
+	if (temp == nullptr) {//СЌР»РµРјРµРЅС‚ РЅРµ РЅР°Р№РґРµРЅ
 		return false;
 	}
 	else {
@@ -132,9 +132,9 @@ bool sl_list::del(int x) {
 
 }
 
-void sl_list::add(int x)//в конец
+void sl_list::add(int x)//РІ РєРѕРЅРµС†
 {
-	if (first == true) {//список не пуст
+	if (first == true) {//СЃРїРёСЃРѕРє РЅРµ РїСѓСЃС‚
 		sl_list * temp = this;
 		while (temp->next != nullptr) {
 			temp = temp->next;
@@ -143,7 +143,7 @@ void sl_list::add(int x)//в конец
 		temp->next->data = x; 
 		temp->next->next = nullptr;
 	}
-	else {//список пуст
+	else {//СЃРїРёСЃРѕРє РїСѓСЃС‚
 		//sl_list * temp = new sl_list;
 		this->data = x;
 		first = true;
@@ -156,16 +156,16 @@ private:
 	int data;
 	dl_list * next;
 	dl_list * prev;
-	bool first;//флаг того, есть хотя бы один элемент в списке или нет
+	bool first;//С„Р»Р°Рі С‚РѕРіРѕ, РµСЃС‚СЊ С…РѕС‚СЏ Р±С‹ РѕРґРёРЅ СЌР»РµРјРµРЅС‚ РІ СЃРїРёСЃРєРµ РёР»Рё РЅРµС‚
 public:
 	dl_list();
 	dl_list(int);
 	void show();
 	dl_list * search(int key);
-	dl_list * insert(int key);//в начало
+	dl_list * insert(int key);//РІ РЅР°С‡Р°Р»Рѕ
 	bool del(dl_list * d);
 	bool del(int x);
-	void add(int x);//в конец
+	void add(int x);//РІ РєРѕРЅРµС†
 };
 
 dl_list::dl_list() {
@@ -178,7 +178,7 @@ dl_list::dl_list(int x) {
 	data = x;
 }
 
-void dl_list::show() {//будем сначала подыматься наверх, а затем печатать весь список
+void dl_list::show() {//Р±СѓРґРµРј СЃРЅР°С‡Р°Р»Р° РїРѕРґС‹РјР°С‚СЊСЃСЏ РЅР°РІРµСЂС…, Р° Р·Р°С‚РµРј РїРµС‡Р°С‚Р°С‚СЊ РІРµСЃСЊ СЃРїРёСЃРѕРє
 	dl_list * temp = this;
 	while (temp->prev != nullptr) {
 		temp = temp->prev;
@@ -190,7 +190,7 @@ void dl_list::show() {//будем сначала подыматься наверх, а затем печатать весь с
 	cout << endl;
 }
 
-dl_list * dl_list::search(int key) {//будем сначала подыматься наверх, а затем искать во всём списке
+dl_list * dl_list::search(int key) {//Р±СѓРґРµРј СЃРЅР°С‡Р°Р»Р° РїРѕРґС‹РјР°С‚СЊСЃСЏ РЅР°РІРµСЂС…, Р° Р·Р°С‚РµРј РёСЃРєР°С‚СЊ РІРѕ РІСЃС‘Рј СЃРїРёСЃРєРµ
 	dl_list * temp = this;
 	while (temp->prev != nullptr) {
 		temp = temp->prev;
@@ -206,14 +206,14 @@ dl_list * dl_list::search(int key) {//будем сначала подыматься наверх, а затем и
 	}
 }
 
-dl_list * dl_list::insert(int key) {//в начало
+dl_list * dl_list::insert(int key) {//РІ РЅР°С‡Р°Р»Рѕ
 	dl_list * temp = this;
 	while (temp->prev != nullptr) {
 		temp = temp->prev;
 		cout << temp->data << " in insert ";
 	}
 	cout << endl;
-	if (temp->first == true) {//здесь, в 1-м элементе списка, уже записывали 
+	if (temp->first == true) {//Р·РґРµСЃСЊ, РІ 1-Рј СЌР»РµРјРµРЅС‚Рµ СЃРїРёСЃРєР°, СѓР¶Рµ Р·Р°РїРёСЃС‹РІР°Р»Рё 
 		dl_list * temp2 = new dl_list;
 		temp2->data = key;
 		temp2->prev = nullptr;
@@ -221,7 +221,7 @@ dl_list * dl_list::insert(int key) {//в начало
 		temp->prev = temp2;
 		return temp2;
 	}
-	else {//не записывали
+	else {//РЅРµ Р·Р°РїРёСЃС‹РІР°Р»Рё
 		temp->data = key;   
 		temp->first = true;
 		return temp;
@@ -237,30 +237,30 @@ bool dl_list::del(dl_list * d) {
 		temp = temp->next;
 	}
 	if (temp == d) {
-		//if (temp != this) {//удаляемый элемент не сам элемент
+		//if (temp != this) {//СѓРґР°Р»СЏРµРјС‹Р№ СЌР»РµРјРµРЅС‚ РЅРµ СЃР°Рј СЌР»РµРјРµРЅС‚
 			if ((temp->prev != nullptr) && (temp->next != nullptr)) {
 				temp->prev->next = temp->next;
 				temp->next->prev = temp->prev;
 			}
-			else if (temp->prev != nullptr) {//есть предыдущий, нет следующего
+			else if (temp->prev != nullptr) {//РµСЃС‚СЊ РїСЂРµРґС‹РґСѓС‰РёР№, РЅРµС‚ СЃР»РµРґСѓСЋС‰РµРіРѕ
 				temp->prev->next = nullptr;
 			}
-			else if (temp->next != nullptr) {//есть следующий, нет предыдущего
+			else if (temp->next != nullptr) {//РµСЃС‚СЊ СЃР»РµРґСѓСЋС‰РёР№, РЅРµС‚ РїСЂРµРґС‹РґСѓС‰РµРіРѕ
 				temp->next->prev = nullptr;
 			}
 			delete temp;
 			return true;
 		//}
-		//else {//удаляемый элемент есть this
+		//else {//СѓРґР°Р»СЏРµРјС‹Р№ СЌР»РµРјРµРЅС‚ РµСЃС‚СЊ this
 			
 		//}
 	}
-	else {//не нашли
+	else {//РЅРµ РЅР°С€Р»Рё
 		return false;
 	}
 }
 //bool dl_list::del(int x);
-//void dl_list::add(int x);//в конец
+//void dl_list::add(int x);//РІ РєРѕРЅРµС†
 
 struct node {
 	int data, count;
@@ -360,7 +360,7 @@ public:
 		}
 		return x;
 	}
-	void insert(node * x, int key) {//дописать версию для count
+	void insert(node * x, int key) {//РґРѕРїРёСЃР°С‚СЊ РІРµСЂСЃРёСЋ РґР»СЏ count
 		node * n = new node(key, 1);
 		node * y = nullptr;
 		while (x != nullptr) {
@@ -553,9 +553,9 @@ public:
 			y->left = x;
 		}
 	}
-	void RightRotate(RBTree *T, node_color *y) {//у == 3
+	void RightRotate(RBTree *T, node_color *y) {//Сѓ == 3
 		if (y->left != nullptr) {
-			node_color *x = y->left;//х это 2
+			node_color *x = y->left;//С… СЌС‚Рѕ 2
 			if (y == root) {
 				root = x;
 			}
@@ -564,14 +564,14 @@ public:
 					y->prev->right = x;
 				}
 				else {
-					y->prev->left = x;//у 4 двойка левый потомок теперь
+					y->prev->left = x;//Сѓ 4 РґРІРѕР№РєР° Р»РµРІС‹Р№ РїРѕС‚РѕРјРѕРє С‚РµРїРµСЂСЊ
 				}
 			}
-			x->prev = y->prev;//предок 2 есть 4
-			y->left = x->right;//у 3 теперь левый потомок это нуллптр
-			if (x->right != nullptr) x->right->prev = y;//3, сюда не заходим
-			y->prev = x;//у тройки предок теперь двойка !
-			x->right = y;//двойка указывает на тройку
+			x->prev = y->prev;//РїСЂРµРґРѕРє 2 РµСЃС‚СЊ 4
+			y->left = x->right;//Сѓ 3 С‚РµРїРµСЂСЊ Р»РµРІС‹Р№ РїРѕС‚РѕРјРѕРє СЌС‚Рѕ РЅСѓР»Р»РїС‚СЂ
+			if (x->right != nullptr) x->right->prev = y;//3, СЃСЋРґР° РЅРµ Р·Р°С…РѕРґРёРј
+			y->prev = x;//Сѓ С‚СЂРѕР№РєРё РїСЂРµРґРѕРє С‚РµРїРµСЂСЊ РґРІРѕР№РєР° !
+			x->right = y;//РґРІРѕР№РєР° СѓРєР°Р·С‹РІР°РµС‚ РЅР° С‚СЂРѕР№РєСѓ
 		}
 	}
 	node_color * insert(RBTree *T, int key) {
@@ -624,13 +624,13 @@ public:
 						U = G->left;
 					}//2
 					if ((U == nullptr) || (U->color == 'b')) {
-						if ((z == F->left) && (F == G->left)) {//z-F-G - левые потомки, прямая линия
+						if ((z == F->left) && (F == G->left)) {//z-F-G - Р»РµРІС‹Рµ РїРѕС‚РѕРјРєРё, РїСЂСЏРјР°СЏ Р»РёРЅРёСЏ
 							F->color = 'b'; G->color = 'r';
 							int j = 1;
 							RightRotate(this, G);//5
 							int i = 1;
 						}
-						else if ((z == F->right) && (F == G->right)) {//z-F-G - правые потомки, прямая линия
+						else if ((z == F->right) && (F == G->right)) {//z-F-G - РїСЂР°РІС‹Рµ РїРѕС‚РѕРјРєРё, РїСЂСЏРјР°СЏ Р»РёРЅРёСЏ
 							F->color = 'b'; G->color = 'r';
 							LeftRotate(this, G);//5
 							
@@ -646,8 +646,8 @@ public:
 							LeftRotate(this, G);//6
 						}
 						z = F;//?
-					}//?Может возникнуть красно-красное нарушение между G и G->prev
-					 //Если G - корень, то он должен быть чёрным, а после алгоритма сверху он красный
+					}//?РњРѕР¶РµС‚ РІРѕР·РЅРёРєРЅСѓС‚СЊ РєСЂР°СЃРЅРѕ-РєСЂР°СЃРЅРѕРµ РЅР°СЂСѓС€РµРЅРёРµ РјРµР¶РґСѓ G Рё G->prev
+					 //Р•СЃР»Рё G - РєРѕСЂРµРЅСЊ, С‚Рѕ РѕРЅ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ С‡С‘СЂРЅС‹Рј, Р° РїРѕСЃР»Рµ Р°Р»РіРѕСЂРёС‚РјР° СЃРІРµСЂС…Сѓ РѕРЅ РєСЂР°СЃРЅС‹Р№
 					else if (U->color == 'r') {//if U is red we just repaint G,F,U
 						G->color = 'r';
 						F->color = 'b';
@@ -710,14 +710,14 @@ public:
 				z->count = x->count;
 				z = x;
 			}
-			//у z максимум один потомок
+			//Сѓ z РјР°РєСЃРёРјСѓРј РѕРґРёРЅ РїРѕС‚РѕРјРѕРє
 			node_color *N = nullptr;
 			node_color *B = nullptr;
 			z->left != nullptr ? N = z->left : N = z->right;
 			z->prev->right != z ? B = z->prev->right : B = z->prev->left;
 			node_color *CL = B->left; node_color *CR = B->right;
 			node_color *F = z->prev;
-			if (z->color == 'r') {//ничего делать не нужно
+			if (z->color == 'r') {//РЅРёС‡РµРіРѕ РґРµР»Р°С‚СЊ РЅРµ РЅСѓР¶РЅРѕ
 				z->prev->left == z ? z->prev->left = N : z->prev->right = N;
 				N->prev = z->prev;
 				delete z;
