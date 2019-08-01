@@ -723,32 +723,58 @@ public:
 				delete z;
 			}//далее предполагается, что цвет удалённого узла чёрный
 			else {
-				while ((N != root) && (N->color == 'r')) {
+				while ((N != root) && (N->color == 'b')) {
+					F = N->prev; N->prev->right != N ? B = N->prev->right : B = N->prev->left;
+					CL = B->left; CR = B->right;
 					if (B->color == 'r') {//4 случай
 						B->color = F->color;
 						F->color = 'r';
-						LeftRotate(this, F);
-						B = CL;//выставление переменных для случаев 1-3 и 5
-						if (B != nullptr) {
-							CL = B->left; CR = B->right;
+						if (N == N->prev->left) {
+							LeftRotate(this, F);
+							B = CL;//выставление переменных для случаев 1-3 и 5
+							if (B != nullptr) {
+								CL = B->left; CR = B->right;
+							}
+						}
+						else {
+							RightRotate(this, F);
+							B = CR;//выставление переменных для случаев 1-3 и 5
+							if (B != nullptr) {
+								CR = B->right; CL = B->left;
+							}
 						}
 					}
 					//1 случай
 					if ((B->color == 'b') && (F->color == 'r') && (N->color == 'b') && (((CL != nullptr) && (CL->color == 'b')) || (CL == nullptr)) && (((CR != nullptr) && (CR->color == 'b')) || (CR == nullptr))) {
 						F->color = 'b'; B->color = 'r';//? delete z
+						break;
 					}
 					//2 случай
 					else if ((B->color == 'b') && (CR->color == 'r')) {
 						B->color = F->color;
 						F->color = 'b';
-						if (CR != nullptr) CR->color = 'b';
-						LeftRotate(this, F);
+						if (N == N->prev->left) {
+							if (CR != nullptr) CR->color = 'b';
+							LeftRotate(this, F);
+						}
+						else {
+							if (CL != nullptr) CL->color = 'b';
+							RightRotate(this, F);
+						}
+						break;
 					}
 					//3 случай
 					else if ((B->color == 'b') && ((CL != nullptr) && (CL->color == 'r')) && ((CR == nullptr) || (CR->color == 'b'))) {
-						RightRotate(this, B);
-						if (CL != nullptr) CL->color = 'b';
+						if (N == N->prev->left) {
+							RightRotate(this, B);
+							if (CL != nullptr) CL->color = 'b';
+						}
+						else {
+							LeftRotate(this, B);
+							if (CR != nullptr) CR->color = 'b';
+						}
 						B->color = 'r';
+						break;
 					}
 					//5 случай
 					else if ((B->color == 'b') && (F->color == 'b') && (N->color == 'b') && (((CL != nullptr) && (CL->color == 'b')) || (CL == nullptr)) && (((CR != nullptr) && (CR->color == 'b')) || (CR == nullptr))) {
@@ -817,6 +843,7 @@ int main()
 	//cout << "1" << endl;
 	
 	T.Inorder_tree_walk(T.getRoot());
+	cout << 'start deleting' << endl;
 	cout << endl;
 	system("pause");
     return 0;
