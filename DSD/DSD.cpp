@@ -714,15 +714,12 @@ public:
 			node_color *N = nullptr;
 			node_color *B = nullptr;
 			z->left != nullptr ? N = z->left : N = z->right;
-			z->prev->right != z ? B = z->prev->right : B = z->prev->left;
-			node_color *CL = B->left; node_color *CR = B->right;
+			node_color *CL; node_color *CR;
 			node_color *F = z->prev;//?? не обрабатывается случай, когда B == nullptr
-			if (z->color == 'r') {//ничего делать не нужно
+			//далее предполагается, что цвет удалённого узла чёрный
+			if (z->color == 'b') {
 				z->prev->left == z ? z->prev->left = N : z->prev->right = N;//? надо определиться, куда и как вставлять этот код в другие ветви else if 
 				N->prev = z->prev;
-				delete z;
-			}//далее предполагается, что цвет удалённого узла чёрный
-			else {
 				while ((N != root) && (N->color == 'b')) {
 					F = N->prev; N->prev->right != N ? B = N->prev->right : B = N->prev->left;
 					CL = B->left; CR = B->right;
@@ -743,10 +740,12 @@ public:
 								CR = B->right; CL = B->left;
 							}
 						}
+						cout << "4" << endl;
 					}
 					//1 случай
 					if ((B->color == 'b') && (F->color == 'r') && (N->color == 'b') && (((CL != nullptr) && (CL->color == 'b')) || (CL == nullptr)) && (((CR != nullptr) && (CR->color == 'b')) || (CR == nullptr))) {
 						F->color = 'b'; B->color = 'r';//? delete z
+						cout << "1" << endl;
 						break;
 					}
 					//2 случай
@@ -761,6 +760,7 @@ public:
 							if (CL != nullptr) CL->color = 'b';
 							RightRotate(this, F);
 						}
+						cout << "2" << endl;
 						break;
 					}
 					//3 случай
@@ -774,14 +774,32 @@ public:
 							if (CR != nullptr) CR->color = 'b';
 						}
 						B->color = 'r';
+						cout << "3" << endl;
 						break;
 					}
 					//5 случай
 					else if ((B->color == 'b') && (F->color == 'b') && (N->color == 'b') && (((CL != nullptr) && (CL->color == 'b')) || (CL == nullptr)) && (((CR != nullptr) && (CR->color == 'b')) || (CR == nullptr))) {
 						B->color = 'r';
 						N = F;
+						cout << "5" << endl;
 					}
 				}
+			}
+			else {//ничего делать не нужно
+				if (z != root) {
+					if (z->right != nullptr) {
+						z->prev->right == z ? z->prev->right = z->right : z->prev->left = z->right;
+						z->right->prev = z->prev;
+					}
+					else if (z->left != nullptr) {
+						z->prev->right == z ? z->prev->right = z->left : z->prev->left = z->left;
+						z->left->prev = z->prev;
+					}
+					else {
+						z->prev->right == z ? z->prev->right = nullptr : z->prev->left = nullptr;
+					}
+				}
+				delete z;
 			}
 		}
 		
@@ -843,7 +861,9 @@ int main()
 	//cout << "1" << endl;
 	
 	T.Inorder_tree_walk(T.getRoot());
-	cout << 'start deleting' << endl;
+	cout << "start deleting" << endl;
+	T.RBDelete(&T, 1);
+	T.Inorder_tree_walk(T.getRoot());
 	cout << endl;
 	system("pause");
     return 0;
