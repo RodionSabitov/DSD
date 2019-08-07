@@ -546,14 +546,27 @@ public:
 		int cur = 0; string b = ""; int curlngth = 1;
 		for (int i = 0; i < count; i++) {
 			while (b.length() <= curlngth) {
-				b = dec2bin(cur);
+				b = dec2bin(cur, curlngth);
 				print_lvl(this, b);
 				cur++;
+				i++;
+				if (i == count) break;
 			}
 			cur = 0; curlngth++;
+			cout << endl;
 		}
-
-
+	}
+	void print_lvl(RBTree *T, string b) {
+		auto print_node = T->getRoot();
+		for (int i = 0; i < b.length(); i++) {
+			if (b[i] == '0') {
+				print_node = print_node->left;
+			}
+			else {
+				print_node = print_node->right;
+			}
+		}
+		cout << "(" << print_node->data << ";" << print_node->prev->data << ")\t";
 	}
 	string dec2bin(int a, int curlngth) {
 		int pow = 1; string res = "";
