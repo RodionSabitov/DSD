@@ -4,6 +4,8 @@
 #include "stdafx.h"
 #include <iostream>
 #include <ctime>
+#include <fcntl.h>
+#include <string>
 
 using namespace std;
 
@@ -517,10 +519,13 @@ class RBTree {
 		}
 	};
 	node_color *root;
+	int count;
+	int h, L;
 public:
 	RBTree() {
 		//nullptr = new node_color{ 0,'b', 0};
 		root = nullptr;
+		count = h = L;
 	}
 	void Inorder_tree_walk(node_color * x) {
 		if (x != nullptr) {
@@ -530,6 +535,37 @@ public:
 			}
 			Inorder_tree_walk(x->right);
 		}
+	}
+	void InPrint(RBTree *T) {
+		auto nroot = T->getRoot();
+		h = (int)(2 * log(count + 1) / log(2));
+		cout << "log count = " << log(count) << ' ' << "log2 = " << log(2) << endl;
+		L = pow(2, h - 1);
+		cout << count << ' ' << h << ' ' << L << ' ' << endl;
+		int N = (int)(log(count) / log(2)) + 1;
+		int cur = 0; string b = ""; int curlngth = 1;
+		for (int i = 0; i < count; i++) {
+			while (b.length() <= curlngth) {
+				b = dec2bin(cur);
+				print_lvl(this, b);
+				cur++;
+			}
+			cur = 0; curlngth++;
+		}
+
+
+	}
+	string dec2bin(int a, int curlngth) {
+		int pow = 1; string res = "";
+
+		while (a > 0) {
+			res = to_string(a % 2) + res;
+			a >> 1;
+		}
+		while (res.length() != curlngth) {
+			res = "0" + res;
+		}
+		return res;
 	}
 	void LeftRotate(RBTree *T, node_color *x) {//x - предок
 		if (x->right != nullptr) {
@@ -575,6 +611,7 @@ public:
 		}
 	}
 	node_color * insert(RBTree *T, int key) {
+		count++;
 		node_color * n = new node_color(key, 'r');
 		node_color * y = nullptr;
 		node_color * x = root;
@@ -699,6 +736,7 @@ public:
 
 	void RBDelete(RBTree *T, int key) {
 		node_color * z = Tree_search(T->getRoot(), key);
+		count--;
 		if (z->count > 1) {
 			z->count--;
 			return;
@@ -709,6 +747,8 @@ public:
 				z->data = x->data;
 				z->count = x->count;
 				z = x;
+				cout << "после копирования данных из саксессора" << endl;
+				Inorder_tree_walk(getRoot());
 			}
 			//у z максимум один потомок
 			node_color *N = nullptr;
@@ -808,6 +848,7 @@ public:
 
 int main()
 {
+	//_set_mode(_fileno(stdout), _O_U16TEXT);
 	/*BinTree b;
 	b.insert(b.getRoot(), 10);
 	b.insert(b.getRoot(), 11);
@@ -861,6 +902,7 @@ int main()
 	//cout << "1" << endl;
 	
 	T.Inorder_tree_walk(T.getRoot());
+	T.InPrint(&T);
 	cout << "start deleting" << endl;
 	T.RBDelete(&T, 1);
 	T.Inorder_tree_walk(T.getRoot());
