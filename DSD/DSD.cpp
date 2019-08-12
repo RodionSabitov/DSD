@@ -519,7 +519,7 @@ class RBTree {
 		}
 	};
 	node_color *root;
-	int count;
+	int count;//? почему-то на единицу меньше
 	int h, L;
 public:
 	RBTree() {
@@ -543,20 +543,26 @@ public:
 		L = pow(2, h - 1);
 		cout << count << ' ' << h << ' ' << L << ' ' << endl;
 		int N = (int)(log(count) / log(2)) + 1;
-		int cur = 0; string b = ""; int curlngth = 1;
-		for (int i = 0; i < count; i++) {
+		int cur = 0; string b = "0"; int curlngth = 1;
+		for (int i = 0; i < (int)(count / pow(2, b.length())); i++) cout << '\t';
+		cout << "Root = " << root->color << ' ' << root->data << endl;
+		for (int i = 0; i < count - 1; i++) {
 			while (b.length() <= curlngth) {
-				b = dec2bin(cur, curlngth);
-				print_lvl(this, b);
+				print_lvl(this, b, count);
 				cur++;
 				i++;
-				if (i == count) break;
+				if (i == count - 1) break;
+				b = dec2bin(cur, curlngth);
 			}
 			cur = 0; curlngth++;
-			cout << endl;
+			b = ""; while (curlngth > b.length()) { b += "0"; }//к
+			cout << endl;//после удаления делает лишний переход на другую строку
+			if (i == count - 1) 
+				print_lvl(this, b, count);
 		}
+		cout << endl;
 	}
-	void print_lvl(RBTree *T, string b) {
+	void print_lvl(RBTree *T, string b, int count) {
 		auto print_node = T->getRoot();
 		for (int i = 0; i < b.length(); i++) {
 			if (b[i] == '0') {
@@ -566,16 +572,18 @@ public:
 				print_node = print_node->right;
 			}
 		}
-		cout << "(" << print_node->data << ";" << print_node->prev->data << ")\t";
+		{}
+		for (int i = 0; i < (int)(count / (pow(2, b.length()) + 1)); i++) cout << '\t';
+		cout << print_node->color  << ' ' << "(" << print_node->data << ";" << print_node->prev->data << ")";
 	}
 	string dec2bin(int a, int curlngth) {
 		int pow = 1; string res = "";
 
 		while (a > 0) {
 			res = to_string(a % 2) + res;
-			a >> 1;
+			a = a >> 1;
 		}
-		while (res.length() != curlngth) {
+		while (res.length() < curlngth) {
 			res = "0" + res;
 		}
 		return res;
@@ -720,7 +728,7 @@ public:
 	}
 	node_color * Tree_search(node_color * x, int key) {
 		if ((x == nullptr) || (x->data == key)) {
-			return root;
+			return x;
 		}
 		if (key < x->data) {
 			return Tree_search(x->left, key);
@@ -746,7 +754,6 @@ public:
 		}
 		return x;
 	}
-
 	void RBDelete(RBTree *T, int key) {
 		node_color * z = Tree_search(T->getRoot(), key);
 		count--;
@@ -919,6 +926,7 @@ int main()
 	cout << "start deleting" << endl;
 	T.RBDelete(&T, 1);
 	T.Inorder_tree_walk(T.getRoot());
+	T.InPrint(&T);
 	cout << endl;
 	system("pause");
     return 0;
