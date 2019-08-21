@@ -536,7 +536,7 @@ public:
 			Inorder_tree_walk(x->right);
 		}
 	}
-	void InPrint(RBTree *T) {
+	void InPrint(RBTree *T) {//проблема с табуляцией
 		auto nroot = T->getRoot();
 		h = (int)(2 * log(count + 1) / log(2));
 		cout << "log count = " << log(count) << ' ' << "log2 = " << log(2) << endl;
@@ -548,10 +548,11 @@ public:
 		cout << "Root = " << root->color << ' ' << root->data << endl;
 		for (int i = 0; i < count - 1; i++) {
 			while (b.length() <= curlngth) {
-				print_lvl(this, b, count);
 				cur++;
-				i++;
-				if (i == count - 1) break;
+				if (print_lvl(this, b, count)) {
+					if (i == count - 1) break;//?
+					i++;
+				}
 				b = dec2bin(cur, curlngth);
 			}
 			cur = 0; curlngth++;
@@ -562,9 +563,10 @@ public:
 		}
 		cout << endl;
 	}
-	void print_lvl(RBTree *T, string b, int count) {
+	bool print_lvl(RBTree *T, string b, int count) {
 		auto print_node = T->getRoot();
 		for (int i = 0; i < b.length(); i++) {
+			if (print_node == nullptr) break;
 			if (b[i] == '0') {
 				print_node = print_node->left;
 			}
@@ -572,9 +574,13 @@ public:
 				print_node = print_node->right;
 			}
 		}
-		{}
-		for (int i = 0; i < (int)(count / (pow(2, b.length()) + 1)); i++) cout << '\t';
-		cout << print_node->color  << ' ' << "(" << print_node->data << ";" << print_node->prev->data << ")";
+		if (print_node != nullptr) {
+			for (int i = 0; i < (int)(count / (pow(2, b.length()) + 1)); i++) cout << '\t';
+			cout << print_node->color << ' ' << "(" << print_node->data << ";" << print_node->prev->data << ")";
+			return true;
+		}
+		else 
+			return false;
 	}
 	string dec2bin(int a, int curlngth) {
 		int pow = 1; string res = "";
@@ -754,114 +760,127 @@ public:
 		}
 		return x;
 	}
-	void RBDelete(RBTree *T, int key) {
+	bool RBDelete(RBTree *T, int key) {
 		node_color * z = Tree_search(T->getRoot(), key);
-		count--;
-		if (z->count > 1) {
-			z->count--;
-			return;
-		}
-		else {
-			if ((z->left != nullptr) && (z->right != nullptr)) {
-				node_color * x = Tree_succ(z);
-				z->data = x->data;
-				z->count = x->count;
-				z = x;
-				cout << "после копирования данных из саксессора" << endl;
-				Inorder_tree_walk(getRoot());
+		if (z != nullptr) {
+			count--;
+			if (z->count > 1) {
+				z->count--;
+				return true;
 			}
-			//у z максимум один потомок
-			node_color *N = nullptr;
-			node_color *B = nullptr;
-			z->left != nullptr ? N = z->left : N = z->right;
-			node_color *CL; node_color *CR;
-			node_color *F = z->prev;//?? не обрабатывается случай, когда B == nullptr
-			//далее предполагается, что цвет удалённого узла чёрный
-			if (z->color == 'b') {
-				z->prev->left == z ? z->prev->left = N : z->prev->right = N;//? надо определиться, куда и как вставлять этот код в другие ветви else if 
-				N->prev = z->prev;
-				while ((N != root) && (N->color == 'b')) {
-					F = N->prev; N->prev->right != N ? B = N->prev->right : B = N->prev->left;
-					CL = B->left; CR = B->right;
-					if (B->color == 'r') {//4 случай
-						B->color = F->color;
-						F->color = 'r';
-						if (N == N->prev->left) {
-							LeftRotate(this, F);
-							B = CL;//выставление переменных для случаев 1-3 и 5
-							if (B != nullptr) {
-								CL = B->left; CR = B->right;
-							}
-						}
-						else {
-							RightRotate(this, F);
-							B = CR;//выставление переменных для случаев 1-3 и 5
-							if (B != nullptr) {
-								CR = B->right; CL = B->left;
-							}
-						}
-						cout << "4" << endl;
-					}
-					//1 случай
-					if ((B->color == 'b') && (F->color == 'r') && (N->color == 'b') && (((CL != nullptr) && (CL->color == 'b')) || (CL == nullptr)) && (((CR != nullptr) && (CR->color == 'b')) || (CR == nullptr))) {
-						F->color = 'b'; B->color = 'r';//? delete z
-						cout << "1" << endl;
-						break;
-					}
-					//2 случай
-					else if ((B->color == 'b') && (CR->color == 'r')) {
-						B->color = F->color;
-						F->color = 'b';
-						if (N == N->prev->left) {
-							if (CR != nullptr) CR->color = 'b';
-							LeftRotate(this, F);
-						}
-						else {
-							if (CL != nullptr) CL->color = 'b';
-							RightRotate(this, F);
-						}
-						cout << "2" << endl;
-						break;
-					}
-					//3 случай
-					else if ((B->color == 'b') && ((CL != nullptr) && (CL->color == 'r')) && ((CR == nullptr) || (CR->color == 'b'))) {
-						if (N == N->prev->left) {
-							RightRotate(this, B);
-							if (CL != nullptr) CL->color = 'b';
-						}
-						else {
-							LeftRotate(this, B);
-							if (CR != nullptr) CR->color = 'b';
-						}
-						B->color = 'r';
-						cout << "3" << endl;
-						break;
-					}
-					//5 случай
-					else if ((B->color == 'b') && (F->color == 'b') && (N->color == 'b') && (((CL != nullptr) && (CL->color == 'b')) || (CL == nullptr)) && (((CR != nullptr) && (CR->color == 'b')) || (CR == nullptr))) {
-						B->color = 'r';
-						N = F;
-						cout << "5" << endl;
-					}
+			else {
+				if ((z->left != nullptr) && (z->right != nullptr)) {
+					node_color * x = Tree_succ(z);
+					z->data = x->data;
+					z->count = x->count;
+					z = x;
+					cout << "после копирования данных из саксессора" << endl;
+					Inorder_tree_walk(getRoot());
 				}
-			}
-			else {//ничего делать не нужно
-				if (z != root) {
-					if (z->right != nullptr) {
-						z->prev->right == z ? z->prev->right = z->right : z->prev->left = z->right;
-						z->right->prev = z->prev;
+				//у z максимум один потомок
+				node_color *N = nullptr;
+				node_color *B = nullptr;
+				z->left != nullptr ? N = z->left : N = z->right;
+				node_color *CL; node_color *CR;
+				node_color *F = z->prev;//?? не обрабатывается случай, когда B == nullptr
+										//далее предполагается, что цвет удалённого узла чёрный
+				if ((z->color == 'r') || (N == nullptr)) {//ничего делать не нужно
+					if (z != root) {
+						if (z->right != nullptr) {
+							z->prev->right == z ? z->prev->right = z->right : z->prev->left = z->right;
+							z->right->prev = z->prev;
+						}
+						else if (z->left != nullptr) {
+							z->prev->right == z ? z->prev->right = z->left : z->prev->left = z->left;
+							z->left->prev = z->prev;
+						}
+						else {
+							z->prev->right == z ? z->prev->right = nullptr : z->prev->left = nullptr;
+						}
 					}
-					else if (z->left != nullptr) {
-						z->prev->right == z ? z->prev->right = z->left : z->prev->left = z->left;
-						z->left->prev = z->prev;
-					}
-					else {
-						z->prev->right == z ? z->prev->right = nullptr : z->prev->left = nullptr;
-					}
+					delete z;
 				}
-				delete z;
+				else if ((z->color == 'b') && (N->color == 'b')) {
+					z->prev->left == z ? z->prev->left = N : z->prev->right = N;//? надо определиться, куда и как вставлять этот код в другие ветви else if 
+					N->prev = z->prev;
+					while ((N != root) && (N->color == 'b')) {
+						F = N->prev; N->prev->right != N ? B = N->prev->right : B = N->prev->left;
+						CL = B->left; CR = B->right;
+						if (B->color == 'r') {//4 случай
+							B->color = F->color;
+							F->color = 'r';
+							if (N == N->prev->left) {
+								LeftRotate(this, F);
+								B = CL;//выставление переменных для случаев 1-3 и 5
+								if (B != nullptr) {
+									CL = B->left; CR = B->right;
+								}
+							}
+							else {
+								RightRotate(this, F);
+								B = CR;//выставление переменных для случаев 1-3 и 5
+								if (B != nullptr) {
+									CR = B->right; CL = B->left;
+								}
+							}
+							cout << "4" << endl;
+						}
+						//1 случай
+						if ((B->color == 'b') && (F->color == 'r') && (N->color == 'b') && (((CL != nullptr) && (CL->color == 'b')) || (CL == nullptr)) && (((CR != nullptr) && (CR->color == 'b')) || (CR == nullptr))) {
+							F->color = 'b'; B->color = 'r';//? delete z
+							cout << "1" << endl;
+							break;
+						}
+						//2 случай
+						else if ((B->color == 'b') && (CR->color == 'r')) {
+							B->color = F->color;
+							F->color = 'b';
+							if (N == N->prev->left) {
+								if (CR != nullptr) CR->color = 'b';
+								LeftRotate(this, F);
+							}
+							else {
+								if (CL != nullptr) CL->color = 'b';
+								RightRotate(this, F);
+							}
+							cout << "2" << endl;
+							break;
+						}
+						//3 случай
+						else if ((B->color == 'b') && ((CL != nullptr) && (CL->color == 'r')) && ((CR == nullptr) || (CR->color == 'b'))) {
+							if (N == N->prev->left) {
+								RightRotate(this, B);
+								if (CL != nullptr) CL->color = 'b';
+							}
+							else {
+								LeftRotate(this, B);
+								if (CR != nullptr) CR->color = 'b';
+							}
+							B->color = 'r';
+							cout << "3" << endl;
+							break;
+						}
+						//5 случай
+						else if ((B->color == 'b') && (F->color == 'b') && (N->color == 'b') && (((CL != nullptr) && (CL->color == 'b')) || (CL == nullptr)) && (((CR != nullptr) && (CR->color == 'b')) || (CR == nullptr))) {
+							B->color = 'r';
+							N = F;
+							cout << "5" << endl;
+						}
+					}
+
+				}
+				else if ((z->color == 'b') && (N->color == 'r'))
+				{
+					z->prev->left == z ? z->prev->left = N : z->prev->right = N;
+					N->prev = z->prev;
+					N->color = 'b';
+					delete z;
+				}
+
 			}
+			return true;
 		}
+		return false;
 		
 	}
 };
@@ -924,7 +943,7 @@ int main()
 	T.Inorder_tree_walk(T.getRoot());
 	T.InPrint(&T);
 	cout << "start deleting" << endl;
-	T.RBDelete(&T, 1);
+	T.RBDelete(&T, 4);
 	T.Inorder_tree_walk(T.getRoot());
 	T.InPrint(&T);
 	cout << endl;
